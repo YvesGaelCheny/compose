@@ -85,10 +85,6 @@ class LogPrinter:
             self.presenters,
             thread_args))
 
-        grep=""
-        if log_args.get('grep'):
-            grep = log_args.get('grep')
-
         for line in consume_queue(queue, self.cascade_stop):
             remove_stopped_threads(thread_map)
 
@@ -107,8 +103,8 @@ class LogPrinter:
                 # active containers to tail, so continue
                 continue
 
-        if log_args.get('grep'):
-            if log_args.get('grep') in line:
+        if self.log_args.get('grep'):
+            if self.log_args.get('grep') in line:
                 self.write(line)
         else:
             self.write(line)
