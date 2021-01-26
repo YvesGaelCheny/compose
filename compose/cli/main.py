@@ -692,6 +692,7 @@ class TopLevelCommand:
             --tail="all"            Number of lines to show from the end of the logs
                                     for each container.
             --no-log-prefix         Don't print prefix in logs.
+            --grep="something"      Simple grep on an ascii string
         """
         containers = self.project.containers(service_names=options['SERVICE'], stopped=True)
 
@@ -701,10 +702,19 @@ class TopLevelCommand:
                 tail = int(tail)
             elif tail != 'all':
                 raise UserError("tail flag must be all or a number")
+
+        grep = options['--grep']
+        if grep is not None:
+            if type(grep) == str:
+                grep = str(grep)
+            else:
+                raise UserError("grep value must be a valide string")
+        
         log_args = {
             'follow': options['--follow'],
             'tail': tail,
-            'timestamps': options['--timestamps']
+            'timestamps': options['--timestamps'],
+            'grep': grep
         }
         print("Attaching to", list_containers(containers))
         log_printer_from_project(
